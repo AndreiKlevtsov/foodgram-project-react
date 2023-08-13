@@ -1,4 +1,5 @@
 from rest_framework.filters import SearchFilter
+
 from foodgram.models import Ingredient
 
 

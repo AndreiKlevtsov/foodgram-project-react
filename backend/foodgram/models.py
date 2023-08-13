@@ -1,6 +1,7 @@
-from django.db import models
 from django.core import validators
+from django.db import models
 from django.db.models import CASCADE, UniqueConstraint
+
 from core.validators import validate_tag_slug
 from users.models import CustomUser
 
@@ -128,8 +129,8 @@ class RecipeIngredient(models.Model):
         verbose_name='Количество',
         validators=(
             validators.MinValueValidator(
-                1, message='Минимальное количество ингридиентов 1')
-            ,),
+                1, message='Минимальное количество ингридиентов 1'),
+        ),
         default=1,
     )
 

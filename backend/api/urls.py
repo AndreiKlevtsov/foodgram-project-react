@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
-from foodgram.views import TagViewSet, RecipeViewSet, \
-    IngredientViewSet
+
+from foodgram.views import IngredientViewSet, RecipeViewSet, TagViewSet
 from users.views import CustomUserViewSet
 
 app_name = 'api'

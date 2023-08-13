@@ -47,7 +47,7 @@ docker compose -f [имя-файла-docker-compose.yml] exec backend python man
 
 docker compose -f [имя-файла-docker-compose.yml] exec backend python manage.py collectstatic
 
-docker compose -f [имя-файла-docker-compose.yml] exec backend cp -r /app/collected_static/. /static/static/
+docker compose -f [имя-файла-docker-compose.yml] exec backend cp -r /app/collected_static/. /backend_static/static/
 ```
 
 И далее проект доступен на: 

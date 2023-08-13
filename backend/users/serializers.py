@@ -1,8 +1,8 @@
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
 from foodgram.models import Recipe
 from users.models import CustomUser, Subscription
-from djoser.serializers import UserSerializer, UserCreateSerializer
 
 
 class RecipeSerializerForUser(serializers.ModelSerializer):
@@ -22,7 +22,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'username', 'first_name', 'last_name'
         )
         extra_kwargs = {"password": {"write_only": True}}
-
 
 
 class CustomUserSerializer(UserSerializer):
