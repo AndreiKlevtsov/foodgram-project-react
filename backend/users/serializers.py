@@ -1,60 +1,69 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.fields import CharField
-from rest_framework.relations import SlugRelatedField
 
-from users.models import CustomUser
-from foodgram.models import Recipe, Ingredient, Tag, RecipeIngredient
-from djoser.serializers import UserSerializer
+from foodgram.models import Recipe
+from users.models import CustomUser, Subscription
+from djoser.serializers import UserSerializer, UserCreateSerializer
 
 
-class CustomUserSerializer(UserSerializer):
+class RecipeSerializerForUser(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'name', 'text', 'cooking_time',
+            'image',
+        )
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = CustomUser
         fields = (
-            'email', 'id', 'username', 'first_name', 'last_name')
+            'email', 'id', 'password',
+            'username', 'first_name', 'last_name'
+        )
+        extra_kwargs = {"password": {"write_only": True}}
 
 
-class RecipePostSerializer(serializers.ModelSerializer):
-    author = SlugRelatedField(
-        read_only=True,
-        slug_field='username',
-        default=serializers.CurrentUserDefault()
-    )
 
-    class Meta:
-        model = Recipe
-        fields = '__all__'
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = '__all__'
-
-
-class RecipeGetSerializer(serializers.ModelSerializer):
-    author = CustomUserSerializer()
-    tags = TagSerializer(many=True)
-    ingredients = IngredientSerializer(many=True)
+class CustomUserSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        model = Recipe
-        fields = '__all__'
+        model = CustomUser
+        fields = (
+            'email', 'id', 'username', 'first_name', 'last_name',
+            'is_subscribed',
+        )
+        read_only_fields = ('is_subscribed',)
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Subscription.objects.filter(
+            username=user,
+            author=obj
+        ).exists()
 
 
-class RecipeIngredientGetSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='ingredient.id')
-    name = serializers.CharField(source='ingredient.name')
-    measurement_unit = serializers.CharField(
-        source='ingredient.measurement_unit')
+class SubscriptionsSerializer(CustomUserSerializer):
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = RecipeIngredient
-        fields = ('id', 'name', 'measurement_unit', 'amount',)
+        model = CustomUser
+        fields = (
+            'email', 'id', 'username', 'first_name',
+            'last_name', 'is_subscribed', 'recipes',
+            'recipes_count',
+        )
+
+    def get_recipes(self, obj):
+        limit = self.context.get('request').GET.get('recipes_limit')
+        queryset = Recipe.objects.filter(author=obj)
+        if limit:
+            queryset = queryset[:int(limit)]
+        return RecipeSerializerForUser(queryset, many=True).data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
