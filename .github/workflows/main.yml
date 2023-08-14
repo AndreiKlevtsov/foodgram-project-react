@@ -3,7 +3,7 @@ name: Main Foodgram workflows
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests:
