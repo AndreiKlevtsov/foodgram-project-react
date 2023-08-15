@@ -1,16 +1,9 @@
 import os
 
-from core.filters import IngredientNameFilter
-from core.pagination import LimitPagePagination
-from core.permissions import IsAdminOrAuthorOrReadOnly, IsAdminOrReadOnly
-from core.shopping_cart_service import (
-    draw_shopping_cart,
-    generate_final_list, get_ingredients)
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from foodgram.models import Cart, Favorite, Ingredient, Recipe, Tag
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -19,6 +12,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from core.filters import IngredientNameFilter
+from core.pagination import LimitPagePagination
+from core.permissions import IsAdminOrAuthorOrReadOnly, IsAdminOrReadOnly
+from core.shopping_cart_service import (
+    draw_shopping_cart,
+    generate_final_list, get_ingredients)
+from foodgram.models import Cart, Favorite, Ingredient, Recipe, Tag
 from .serializers import (
     FavoriteSerializer, IngredientSerializer,
     RecipeGetSerializer, RecipePostSerializer,
