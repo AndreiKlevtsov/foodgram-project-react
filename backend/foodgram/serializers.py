@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from foodgram.models import Favorite, Ingredient, Recipe, RecipeIngredient, Tag
@@ -75,30 +76,34 @@ class RecipePostSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = '__all__'
 
-    def get_ingridient(self, ingredients, recipe):
+    def create_ingridients(self, ingredients, recipe):
+        recipe_ingredients = []
         for ingredient in ingredients:
-            RecipeIngredient.objects.create(
-                recipe=recipe, ingredient=get_object_or_404(
-                    Ingredient,
-                    pk=ingredient.get(
-                        'id')),
-                amount=ingredient.get('amount')
-            )
+            recipe_ingredients.append(
+                RecipeIngredient(
+                    recipe=recipe,
+                    ingredient=get_object_or_404(Ingredient,
+                                                 pk=ingredient.get('id')),
+                    amount=ingredient.get('amount')
+                ))
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
 
+    @transaction.atomic
     def create(self, validated_data):
         image = validated_data.pop('image')
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(image=image, **validated_data)
         recipe.tags.set(tags)
-        self.get_ingridient(ingredients, recipe)
+        self.create_ingridients(ingredients, recipe)
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         if 'ingredients' in validated_data:
             ingredients = validated_data.pop('ingredients')
             instance.ingredients.clear()
-            self.get_ingridient(ingredients, instance)
+            self.create_ingridients(ingredients, instance)
         if 'tags' in validated_data:
             tags = validated_data.pop('tags')
             instance.tags.set(tags)

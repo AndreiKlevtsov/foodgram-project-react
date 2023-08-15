@@ -3,8 +3,9 @@ import os
 from core.filters import IngredientNameFilter
 from core.pagination import LimitPagePagination
 from core.permissions import IsAdminOrAuthorOrReadOnly, IsAdminOrReadOnly
-from core.shopping_cart_service import (draw_shopping_cart,
-                                        generate_final_list, get_ingredients)
+from core.shopping_cart_service import (
+    draw_shopping_cart,
+    generate_final_list, get_ingredients)
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -18,9 +19,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .serializers import (FavoriteSerializer, IngredientSerializer,
-                          RecipeGetSerializer, RecipePostSerializer,
-                          RecipeSerializer, TagSerializer)
+from .serializers import (
+    FavoriteSerializer, IngredientSerializer,
+    RecipeGetSerializer, RecipePostSerializer,
+    RecipeSerializer, TagSerializer)
 
 
 class RecipeViewSet(ModelViewSet):
@@ -86,8 +88,10 @@ class RecipeViewSet(ModelViewSet):
             recipe=recipe,
         )
         if favorite.exists():
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST
+            return Response({
+                'errors': 'Рецепт уже добавлен в избранное.'
+            },
+                status=status.HTTP_400_BAD_REQUEST,
             )
         Favorite.objects.create(user=request.user, recipe=recipe)
         return Response(FavoriteSerializer(
@@ -108,8 +112,9 @@ class RecipeViewSet(ModelViewSet):
         if favorite.exists():
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        data = {'errors': 'Рецепт не находится в избранном'}
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'errors': 'Рецепт не находится в избранном.'},
+            status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=('post',), )
     def shopping_cart(self, request, pk=None):
@@ -126,6 +131,7 @@ class RecipeViewSet(ModelViewSet):
         )
         if shopping_cart.exists():
             return Response(
+                {'errors': 'Рецепт уже в списке покупок.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         Cart.objects.create(user=request.user, recipe=recipe)
@@ -207,4 +213,3 @@ class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = None

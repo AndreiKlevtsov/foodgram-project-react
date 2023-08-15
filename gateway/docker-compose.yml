@@ -11,13 +11,13 @@ services:
     restart: always
     ports:
       - 5432:5432
-    env_file: ../.env
+    env_file: .env
     volumes:
       - pg:/var/lib/postgresql/data
   backend:
     image: andreiklevtsov/foodgram_backend
     restart: always
-    env_file: ../.env
+    env_file: .env
     volumes:
       - static:/backend_static/
       - media:/app/media/recipes/images/
@@ -25,14 +25,14 @@ services:
       - db
   frontend:
     image: andreiklevtsov/foodgram_frontend
-    command: cp -r /app/build/. /static/
+    command: cp -r /app/result_build/. /static/
     volumes:
       - ../frontend/:/app/result_build/
   gateway:
     image: andreiklevtsov/foodgram_gateway
     depends_on:
       - backend
-    env_file: ../.env
+    env_file: .env
     restart: always
     ports:
       - "8080:80"

@@ -69,16 +69,13 @@ class Recipe(models.Model):
         verbose_name='Название',
         unique=True,
         max_length=200,
-        blank=False,
     )
     image = models.ImageField(
         verbose_name='Изображение',
         upload_to='recipes/images',
-        blank=False,
     )
     text = models.TextField(
         verbose_name='Описание',
-        blank=False,
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -90,14 +87,19 @@ class Recipe(models.Model):
         Tag,
         verbose_name='Тег',
         related_name='recipes',
-        blank=False,
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
         validators=(
-            validators.MinValueValidator(1),
+            validators.MinValueValidator(
+                1, message='Минимальное время пригтовления = 1.'
+            ),
+            validators.MaxValueValidator(
+                10,
+                message='Превышено максимальное время,'
+                        ' проверьте правильность ввода.'
+            )
         ),
-        blank=False,
     )
     created = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -128,7 +130,12 @@ class RecipeIngredient(models.Model):
         verbose_name='Количество',
         validators=(
             validators.MinValueValidator(
-                1, message='Минимальное количество ингридиентов 1'),
+                1, message='Минимальное количество ингридиентов 1'
+            ),
+            validators.MaxValueValidator(
+                5000, message='Превышено максимальное значение,'
+                              ' проверьте правильность ввода.'
+            )
         ),
         default=1,
     )
