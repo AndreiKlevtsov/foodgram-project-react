@@ -15,14 +15,13 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from core.filters import IngredientNameFilter
 from core.pagination import LimitPagePagination
 from core.permissions import IsAdminOrAuthorOrReadOnly, IsAdminOrReadOnly
-from core.shopping_cart_service import (
-    draw_shopping_cart,
-    generate_final_list, get_ingredients)
+from core.shopping_cart_service import (draw_shopping_cart,
+                                        generate_final_list, get_ingredients)
 from foodgram.models import Cart, Favorite, Ingredient, Recipe, Tag
-from .serializers import (
-    FavoriteSerializer, IngredientSerializer,
-    RecipeGetSerializer, RecipePostSerializer,
-    RecipeSerializer, TagSerializer)
+
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeGetSerializer, RecipePostSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class RecipeViewSet(ModelViewSet):
