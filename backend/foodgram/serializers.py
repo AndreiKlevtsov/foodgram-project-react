@@ -21,6 +21,10 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = ('user', 'recipe',)
 
     def to_representation(self, instance):
+        """
+        :param instance:
+        :return:
+        """
         return RecipeSerializer(instance, context={
             'request': self.context.get('request')
         }).data
@@ -77,6 +81,18 @@ class RecipePostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create_ingridients(self, ingredients, recipe):
+        """
+        Создает объекты RecipeIngredient для данного рецепта
+        с указанными ингредиентами.
+
+        :param ingredients: Список ингредиентов.
+        :type ingredients: list
+
+        :param recipe: Объект рецепта.
+        :type recipe: Recipe
+
+        :return: None
+        """
         recipe_ingredients = []
         for ingredient in ingredients:
             recipe_ingredients.append(
@@ -90,6 +106,15 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        """
+        Создает новый рецепт на основе предоставленных проверенных данных.
+
+        :param validated_data: Проверенные данные для создания рецепта.
+        :type validated_data: dict
+
+        :return: Созданный объект рецепта.
+        :rtype: Recipe
+        """
         image = validated_data.pop('image')
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
@@ -100,6 +125,19 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        """
+        Обновляет существующий объект рецепта на основе
+        предоставленных проверенных данных.
+
+        :param instance: Существующий объект рецепта.
+        :type instance: Recipe
+
+        :param validated_data: Проверенные данные для обновления рецепта.
+        :type validated_data: dict
+
+        :return: Обновленный объект рецепта.
+        :rtype: Recipe
+        """
         if 'ingredients' in validated_data:
             ingredients = validated_data.pop('ingredients')
             instance.ingredients.clear()
@@ -110,6 +148,15 @@ class RecipePostSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
+        """
+        Преобразует объект рецепта в представление.
+
+        :param instance: Объект рецепта.
+        :type instance: Recipe
+
+        :return: Представление объекта рецепта.
+        :rtype: dict
+        """
         return RecipeGetSerializer(
             instance, context=self.context
         ).data
@@ -132,12 +179,34 @@ class RecipeGetSerializer(serializers.ModelSerializer):
         exclude = ('created',)
 
     def get_is_favorited(self, recipe: Recipe):
+        """
+        Возвращает флаг, указывающий,
+        добавлен ли рецепт в избранное у пользователя.
+
+        :param recipe: Объект рецепта.
+        :type recipe: Recipe
+
+        :return: Флаг, указывающий,
+        добавлен ли рецепт в избранное у пользователя.
+        :rtype: bool
+        """
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
         return user.favorites.filter(recipe=recipe).exists()
 
     def get_is_in_shopping_cart(self, recipe: Recipe):
+        """
+        Возвращает флаг, указывающий,
+        добавлен ли рецепт в корзину для покупок у пользователя.
+
+        :param recipe: Объект рецепта.
+        :type recipe: Recipe
+
+        :return: Флаг, указывающий,
+        добавлен ли рецепт в корзину для покупок у пользователя.
+        :rtype: bool
+        """
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
