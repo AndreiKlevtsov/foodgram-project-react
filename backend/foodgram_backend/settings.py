@@ -95,7 +95,9 @@ DATABASES = {
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8080',
     'http://backend:8080',
-    'http://localhost:8080'
+    'http://localhost:8080',
+    'https://foodgramklevtsov.duckdns.org',
+    'https://foodgramklevtsov.duckdns.org:8080'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
