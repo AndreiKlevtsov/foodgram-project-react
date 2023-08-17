@@ -23,7 +23,7 @@ services:
       - db
   frontend:
     image: andreiklevtsov/foodgram_frontend
-#    command: cp -r /app/build/. /static/
+    command: cp -r /app/build/. /static/
     volumes:
       - ./frontend/:/app/result_build/
   gateway:
@@ -36,7 +36,7 @@ services:
       - "8080:80"
     volumes:
       - static:/static/
-      - media:/var/html/media/
+      - media:/media/
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend/build:/usr/share/nginx/html/
       - ./docs/:/usr/share/nginx/html/api/docs/
