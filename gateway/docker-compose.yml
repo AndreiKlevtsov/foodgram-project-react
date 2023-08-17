@@ -17,13 +17,13 @@ services:
     restart: always
     env_file: ../.env
     volumes:
-      - static:/backend_static/
-      - media:/app/media/recipes/images/
+      - static:/app/static/
+      - media:/app/media/
     depends_on:
       - db
   frontend:
     image: andreiklevtsov/foodgram_frontend
-    command: cp -r /app/build/. /static/
+#    command: cp -r /app/build/. /static/
     volumes:
       - ./frontend/:/app/result_build/
   gateway:
