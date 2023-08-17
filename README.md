@@ -64,3 +64,14 @@ http://localhost:8080/
 docker compose -f docker-compose.yml down
 ```
 
+# Данные для второй проверки
+
+## ip и домен сервера:
+#### 158.160.69.243
+
+https://foodgramklevtsov.duckdns.org/
+
+## Суперюзер: 
+#### email = a@d.mn 
+#### pass = admin12345678
+
