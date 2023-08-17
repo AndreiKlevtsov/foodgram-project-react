@@ -21,7 +21,7 @@ services:
     restart: always
     env_file: ../.env
     volumes:
-      - static:/app/static/
+      - static:/app/collected_static/
       - media:/app/media/
       - redoc:/app/docs/
     depends_on:
