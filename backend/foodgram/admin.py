@@ -26,6 +26,10 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class IngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -33,6 +37,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'favorite_count',
     )
+    inlines = (IngredientInline,)
     search_fields = ('author__username', 'name', 'tags',)
     list_filter = ('tags',)
     empty_value_display = '-пусто-'
