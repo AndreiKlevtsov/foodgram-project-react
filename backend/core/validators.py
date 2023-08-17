@@ -3,7 +3,7 @@ import re
 from django.core.exceptions import ValidationError
 
 REGEX_NAME = re.compile(r'^[\w.@+-]')
-REGEX_TAG = re.compile(r'^[-a-zA-Z0-9_]')
+REGEX_TAG = re.compile(r'^[-a-zA-Z0-9_ ]+$')
 MESSAGE = 'Не соответствует допустимому формату.'
 
 
@@ -29,6 +29,6 @@ def validate_tag_slug(value):
     """
     if REGEX_TAG.match(value):
         raise ValidationError(
-            f'{value} {MESSAGE}',
+            f'Тег {value} {MESSAGE}',
             params={'value': value},
         )
