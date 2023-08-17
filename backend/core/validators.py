@@ -3,7 +3,7 @@ import re
 from django.core.exceptions import ValidationError
 
 REGEX_NAME = re.compile(r'^[\w.@+-]')
-REGEX_TAG = re.compile(r'^[-a-zA-Z0-9_]+$')
+REGEX_TAG = re.compile(r'^[-a-zA-Z0-9_]')
 MESSAGE = 'Не соответствует допустимому формату.'
 
 
