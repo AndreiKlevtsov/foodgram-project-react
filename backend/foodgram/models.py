@@ -1,3 +1,5 @@
+from django.core.validators import RegexValidator
+
 from core.validators import validate_tag_slug
 from django.core import validators
 from django.db import models
@@ -20,7 +22,11 @@ class Tag(models.Model):
         verbose_name='Слаг',
         unique=True,
         validators=(
-            validate_tag_slug,
+            RegexValidator(
+                regex=r"^[-a-zA-Z0-9_]+$",
+                message="Slug не соответствует допустимому формату",
+            ),
+
         )
     )
 
