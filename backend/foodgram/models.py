@@ -26,7 +26,6 @@ class Tag(models.Model):
                 regex=r"^[-a-zA-Z0-9_]+$",
                 message="Slug не соответствует допустимому формату",
             ),
-
         )
     )
 

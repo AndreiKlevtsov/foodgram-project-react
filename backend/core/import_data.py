@@ -14,7 +14,7 @@ def create_models(file_path, model):
     :param model: модель, импортируется заранее
     """
     with open(
-            '../data/ingredients.json', encoding='utf-8',
+            'data/ingredients.json', encoding='utf-8',
     ) as ingredients_data:
         ingredient_data = json.loads(ingredients_data.read())
         for ingredients in ingredient_data:
