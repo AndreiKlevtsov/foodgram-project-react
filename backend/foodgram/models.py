@@ -1,6 +1,5 @@
 from django.core.validators import RegexValidator
 
-from core.validators import validate_tag_slug
 from django.core import validators
 from django.db import models
 from django.db.models import CASCADE, UniqueConstraint
